@@ -45,6 +45,7 @@ public class JT808ChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Autowired
     private RegisterMsgHandler registerMsgHandler;
 
+    //所有涉及到IO操作的Handler都要放入businessGroup运行
     private EventExecutorGroup businessGroup;
 
     @PostConstruct
@@ -65,7 +66,7 @@ public class JT808ChannelInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new JT808Encoder());
         pipeline.addLast(authMsgHandler);
         pipeline.addLast(heartBeatMsgHandler);
-        pipeline.addLast(locationMsgHandler);
+        pipeline.addLast(businessGroup,locationMsgHandler);//因为locationMsgHandler中涉及到数据库操作，所以放入businessGroup
         pipeline.addLast(logOutMsgHandler);
         pipeline.addLast(registerMsgHandler);
 
