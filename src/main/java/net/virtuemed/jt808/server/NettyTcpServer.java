@@ -36,8 +36,6 @@ public class NettyTcpServer {
     private JT808ChannelInitializer jt808ChannelInitializer;
 
     private volatile boolean isStarted = false;
-    private EventLoopGroup bossGroup = null;
-    private EventLoopGroup workerGroup = null;
 
 
     public synchronized void start() {
@@ -45,8 +43,8 @@ public class NettyTcpServer {
             throw new IllegalStateException("TCP服务正在运行中，监听端口:" + port);
         }
         try {
-            this.bossGroup = new NioEventLoopGroup(bossThreadsNum);
-            this.workerGroup = new NioEventLoopGroup(workerThreadsNum);
+            EventLoopGroup bossGroup = new NioEventLoopGroup(bossThreadsNum);
+            EventLoopGroup workerGroup = new NioEventLoopGroup(workerThreadsNum);
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
