@@ -22,6 +22,6 @@ public class HeartBeatMsgHandler extends BaseHandler<HeartBeatMsg> {
     protected void channelRead0(ChannelHandlerContext ctx, HeartBeatMsg msg) throws Exception {
         log.debug(msg.toString());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        writeAndFlush(ctx,resp);
+        write(ctx,resp);
     }
 }

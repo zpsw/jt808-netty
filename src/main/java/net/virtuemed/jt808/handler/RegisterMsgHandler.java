@@ -24,6 +24,6 @@ public class RegisterMsgHandler extends BaseHandler<LogOutMsg> {
         log.debug(msg.toString());
         //默认鉴权成功
         RegisterResp resp = RegisterResp.success(msg, getSerialNumber(ctx.channel()));
-        writeAndFlush(ctx,resp);
+        write(ctx,resp);
     }
 }

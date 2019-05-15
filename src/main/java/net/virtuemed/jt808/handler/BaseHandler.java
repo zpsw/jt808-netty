@@ -3,6 +3,7 @@ package net.virtuemed.jt808.handler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,8 @@ public abstract class BaseHandler<T> extends SimpleChannelInboundHandler<T> {
         return flowId;
     }
 
-    public void writeAndFlush(ChannelHandlerContext ctx, DataPacket msg) {
-        ctx.writeAndFlush(msg).addListener(future -> {
+    public void write(ChannelHandlerContext ctx, DataPacket msg) {
+        ctx.write(msg).addListener(future -> {
             if (!future.isSuccess()) {
                 log.error("发送失败", future.cause());
             }
@@ -48,5 +49,15 @@ public abstract class BaseHandler<T> extends SimpleChannelInboundHandler<T> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error("exceptionCaught",cause);
         ctx.close();
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            log.warn("客户端{}读取超时，自动断开", ctx.channel().remoteAddress());
+            ctx.close();
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
     }
 }

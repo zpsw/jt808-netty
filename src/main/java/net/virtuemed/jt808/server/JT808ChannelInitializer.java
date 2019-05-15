@@ -13,7 +13,9 @@ import net.virtuemed.jt808.codec.JT808Encoder;
 import net.virtuemed.jt808.handler.*;
 import net.virtuemed.jt808.util.JT808Const;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,42 +33,39 @@ public class JT808ChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Value("${netty.read-timeout}")
     private int readTimeOut;
 
-    @Value("${netty.threads.business}")
-    private int businessThreadsNum;
+    @Autowired
+    @Qualifier("businessGroup")
+    private EventExecutorGroup businessGroup;
 
     @Autowired
     private AuthMsgHandler authMsgHandler;
+
     @Autowired
     private HeartBeatMsgHandler heartBeatMsgHandler;
+
     @Autowired
     private LocationMsgHandler locationMsgHandler;
+
     @Autowired
     private LogOutMsgHandler logOutMsgHandler;
+
     @Autowired
     private RegisterMsgHandler registerMsgHandler;
-
-    //所有涉及到IO操作的Handler都要放入businessGroup运行
-    private EventExecutorGroup businessGroup;
-
-    @PostConstruct
-    public void initEventExecutorGroup() {
-        businessGroup = new DefaultEventExecutorGroup(businessThreadsNum);
-    }
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(
                 new IdleStateHandler(readTimeOut, 0, 0, TimeUnit.MINUTES));
-        // 1024表示单条消息的最大长度，解码器在查找分隔符的时候，达到该长度还没找到的话会抛异常
+        // jt808协议 包头最大长度16+ 包体最大长度1023+分隔符2+转义字符最大姑且算60 = 1100
         pipeline.addLast(
-                new DelimiterBasedFrameDecoder(1024, Unpooled.copiedBuffer(new byte[]{JT808Const.PKG_DELIMITER}),
+                new DelimiterBasedFrameDecoder(1100, Unpooled.copiedBuffer(new byte[]{JT808Const.PKG_DELIMITER}),
                         Unpooled.copiedBuffer(new byte[]{JT808Const.PKG_DELIMITER, JT808Const.PKG_DELIMITER})));
         pipeline.addLast(new JT808Decoder());
         pipeline.addLast(new JT808Encoder());
         pipeline.addLast(authMsgHandler);
         pipeline.addLast(heartBeatMsgHandler);
-        pipeline.addLast(businessGroup,locationMsgHandler);//因为locationMsgHandler中涉及到数据库操作，所以放入businessGroup
+        pipeline.addLast(businessGroup, locationMsgHandler);//因为locationMsgHandler中涉及到数据库操作，所以放入businessGroup
         pipeline.addLast(logOutMsgHandler);
         pipeline.addLast(registerMsgHandler);
 

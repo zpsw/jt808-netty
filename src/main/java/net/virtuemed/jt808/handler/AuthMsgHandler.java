@@ -22,6 +22,6 @@ public class AuthMsgHandler extends BaseHandler<AuthMsg> {
     protected void channelRead0(ChannelHandlerContext ctx, AuthMsg msg) throws Exception {
         log.debug(msg.toString());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        writeAndFlush(ctx,resp);
+        write(ctx,resp);
     }
 }

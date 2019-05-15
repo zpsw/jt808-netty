@@ -29,6 +29,6 @@ public class LocationMsgHandler extends BaseHandler<LocationMsg> {
         log.debug(msg.toString());
         locationRespository.save(LocationEntity.parseFromLocationMsg(msg));
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        writeAndFlush(ctx,resp);
+        write(ctx,resp);
     }
 }

@@ -22,6 +22,6 @@ public class LogOutMsgHandler extends BaseHandler<LogOutMsg> {
     protected void channelRead0(ChannelHandlerContext ctx, LogOutMsg msg) throws Exception {
         log.debug(msg.toString());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        writeAndFlush(ctx,resp);
+        write(ctx,resp);
     }
 }
