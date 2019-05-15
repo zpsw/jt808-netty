@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="false">
+
+	<!-- Log file path -->
+	<property name="log.path" value="log" />
+
+	<!-- Console log output -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{MM-dd HH:mm:ss.SSS} %-5level [%logger{50}] - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Log file debug output -->
+	<appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/debug.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/debug.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>10</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p ${PID:- } [%15.15t] [%-39logger{39}] - %m%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="async_debug" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>-1</discardingThreshold>
+		<queueSize>1000</queueSize>
+		<appender-ref ref="debug"/>
+	</appender>
+	<!-- Log file error output -->
+	<appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+			<maxFileSize>50MB</maxFileSize>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p ${PID:- } [%15.15t] [%-39logger{39}] - %m%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
+	<appender name="async_error" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>512</queueSize>
+		<appender-ref ref="error"/>
+	</appender>
+	<!-- Level: FATAL 0  ERROR 3  WARN 4  INFO 6  DEBUG 7 -->
+	<root level="DEBUG">
+		<appender-ref ref="async_debug" />
+		<appender-ref ref="async_error" />
+		<appender-ref ref="console" />
+	</root>
+
+	<logger name="net.virtuemed" level="DEBUG" />
+	<logger name="io.netty" level="WARN" />
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.hibernate" level="INFO" />
+	<logger name="com.zaxxer" level="INFO" />
+
+</configuration>

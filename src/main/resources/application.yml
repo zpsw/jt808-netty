@@ -1,0 +1,22 @@
+netty:
+  port: 9009
+  read-timeout: 15 #读超时 15分钟
+  threads:
+    boss: 1
+    worker: 4
+    business: 20 #业务线程数量
+
+spring:
+  application:
+    name: jt808
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jt808?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: VirtueMED8789
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update #自动更新表结构
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
