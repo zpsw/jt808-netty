@@ -60,11 +60,11 @@ public class JT808ChannelInitializer extends ChannelInitializer<SocketChannel> {
                         Unpooled.copiedBuffer(new byte[]{JT808Const.PKG_DELIMITER, JT808Const.PKG_DELIMITER})));
         pipeline.addLast(new JT808Decoder());
         pipeline.addLast(new JT808Encoder());
-        pipeline.addLast(authMsgHandler);
         pipeline.addLast(heartBeatMsgHandler);
         pipeline.addLast(businessGroup, locationMsgHandler);//因为locationMsgHandler中涉及到数据库操作，所以放入businessGroup
-        pipeline.addLast(logOutMsgHandler);
+        pipeline.addLast(authMsgHandler);
         pipeline.addLast(registerMsgHandler);
+        pipeline.addLast(logOutMsgHandler);
 
     }
 
