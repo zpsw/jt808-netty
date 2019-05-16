@@ -35,6 +35,6 @@ public class LocationMsgHandler extends BaseHandler<LocationMsg> {
         log.debug(msg.toString());
         locationRespository.save(LocationEntity.parseFromLocationMsg(msg));
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        workerGroup.execute(() -> write(ctx, resp));//直接write是由businessGroup执行，换成workerGroup写可以略微提升性能
+        workerGroup.execute(() -> write(ctx, resp));//直接write是由businessGroup执行，换成workerGroup写可以少一些判断逻辑，略微提升性能
     }
 }
