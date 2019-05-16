@@ -50,7 +50,7 @@ public class JT808Encoder extends MessageToByteEncoder<DataPacket> {
      */
     public ByteBuf escape(ByteBuf raw) {
         int len = raw.readableBytes();
-        ByteBuf buf = ByteBufAllocator.DEFAULT.heapBuffer(len + 12);
+        ByteBuf buf = ByteBufAllocator.DEFAULT.directBuffer(len + 12);
         buf.writeByte(0x7e);
         while (len > 0) {
             byte b = raw.readByte();

@@ -3,16 +3,13 @@ package net.virtuemed.jt808.server;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.ResourceLeakDetector;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,14 +26,13 @@ public class NettyTcpServer {
     @Value("${netty.port}")
     private int port;
 
-    @Value("${netty.threads.boss}")
-    private int bossThreadsNum;
+    @Autowired
+    @Qualifier("bossGroup")
+    private NioEventLoopGroup bossGroup;
 
-    @Value("${netty.threads.worker}")
-    private int workerThreadsNum;
-
-    @Value("${netty.threads.business}")
-    private int businessThreadsNum;
+    @Autowired
+    @Qualifier("workerGroup")
+    private NioEventLoopGroup workerGroup;
 
     @Autowired
     private JT808ChannelInitializer jt808ChannelInitializer;
@@ -50,7 +46,7 @@ public class NettyTcpServer {
         }
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(bossGroup(), workerGroup())
+            serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(jt808ChannelInitializer)
                     .option(ChannelOption.SO_BACKLOG, 1024) //服务端可连接队列数,对应TCP/IP协议listen函数中backlog参数
@@ -66,31 +62,5 @@ public class NettyTcpServer {
         }
     }
 
-    /**
-     * 负责TCP连接建立操作 绝对不能阻塞
-     * @return
-     */
-    @Bean(name = "bossGroup", destroyMethod = "shutdownGracefully")
-    public NioEventLoopGroup bossGroup() {
-        return new NioEventLoopGroup(bossThreadsNum);
-    }
-
-    /**
-     * 负责Socket读写操作 绝对不能阻塞
-     * @return
-     */
-    @Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
-    public NioEventLoopGroup workerGroup() {
-        return new NioEventLoopGroup(workerThreadsNum);
-    }
-
-    /**
-     * Handler中出现IO操作(如数据库操作，网络操作)使用这个
-     * @return
-     */
-    @Bean(name = "businessGroup",destroyMethod = "shutdownGracefully")
-    public EventExecutorGroup businessGroup() {
-       return new DefaultEventExecutorGroup(businessThreadsNum);
-    }
 
 }

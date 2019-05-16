@@ -38,7 +38,7 @@ public abstract class BaseHandler<T> extends SimpleChannelInboundHandler<T> {
     }
 
     public void write(ChannelHandlerContext ctx, DataPacket msg) {
-        ctx.write(msg).addListener(future -> {
+        ctx.writeAndFlush(msg).addListener(future -> {
             if (!future.isSuccess()) {
                 log.error("发送失败", future.cause());
             }

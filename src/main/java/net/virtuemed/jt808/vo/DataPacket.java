@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.ReferenceCountUtil;
 import lombok.Data;
 import net.virtuemed.jt808.util.BCD;
-import net.virtuemed.jt808.util.JT808Const;
+import net.virtuemed.jt808.config.JT808Const;
 import org.apache.commons.lang3.StringUtils;
 
 /**

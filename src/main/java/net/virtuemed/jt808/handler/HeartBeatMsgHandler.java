@@ -23,5 +23,6 @@ public class HeartBeatMsgHandler extends BaseHandler<HeartBeatMsg> {
         log.debug(msg.toString());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         write(ctx,resp);
+        ctx.fireChannelRead(msg);
     }
 }

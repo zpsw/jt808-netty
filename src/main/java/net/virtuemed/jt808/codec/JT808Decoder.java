@@ -13,7 +13,7 @@ import net.virtuemed.jt808.vo.req.*;
 
 import java.util.List;
 
-import static net.virtuemed.jt808.util.JT808Const.*;
+import static net.virtuemed.jt808.config.JT808Const.*;
 
 /**
  * @Author: Zpsw

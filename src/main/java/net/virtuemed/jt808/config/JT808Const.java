@@ -1,4 +1,4 @@
-package net.virtuemed.jt808.util;
+package net.virtuemed.jt808.config;
 
 import java.nio.charset.Charset;
 
