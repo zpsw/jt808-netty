@@ -1,6 +1,7 @@
 package net.virtuemed.jt808.config;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @Author: Zpsw
  * @Date: 2019-05-16
- * @Description: Channel管理，header中的terminalPhone作为主键，实现参考DefaultChannelGroup
+ * @Description: 使用ChannelGroup管理Channel, 维护terminalPhone->ChannelId->Channel 一对一映射关系
  * @Version: 1.0
  */
 @Slf4j
@@ -35,6 +36,10 @@ public class ChannelManager {
 
     private Map<String, ChannelId> channelIdMap = new ConcurrentHashMap<>();
 
+    private ChannelFutureListener remover = future ->
+            channelIdMap.remove(future.channel().attr(TERMINAL_PHONE).get());
+
+
     @PostConstruct
     public void initGroup() {
         channelGroup = new DefaultChannelGroup(businessGroup.next());
@@ -43,22 +48,19 @@ public class ChannelManager {
     public boolean add(String terminalPhone, Channel channel) {
         boolean added = channelGroup.add(channel);
         if (added) {
-            channel.attr(TERMINAL_PHONE).set(terminalPhone);//留给广播使用
+            channel.attr(TERMINAL_PHONE).set(terminalPhone);
+            channel.closeFuture().addListener(remover);
             channelIdMap.put(terminalPhone, channel.id());
         }
         return added;
     }
 
-    public void remove(String terminalPhone) {
-        channelGroup.remove(channelIdMap.remove(terminalPhone));
+    public boolean remove(String terminalPhone) {
+        return channelGroup.remove(channelIdMap.remove(terminalPhone));
     }
 
     public Channel get(String terminalPhone) {
-        Channel channel = channelGroup.find(channelIdMap.get(terminalPhone));
-        if (channel == null) {
-            channelIdMap.remove(terminalPhone);
-        }
-        return channel;
+        return channelGroup.find(channelIdMap.get(terminalPhone));
     }
 
     public ChannelGroup getChannelGroup() {
