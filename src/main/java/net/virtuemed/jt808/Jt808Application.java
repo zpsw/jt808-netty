@@ -1,24 +1,19 @@
 package net.virtuemed.jt808;
 
-import net.virtuemed.jt808.server.NettyTcpServer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @Author: Zpsw
+ * @Date: 2019-05-15
+ * @Description: 服务器启动在NettyTcpServer中
+ * @Version: 1.0
+ */
 @SpringBootApplication
-public class Jt808Application implements CommandLineRunner {
-
-    @Autowired
-    private NettyTcpServer server;
+public class Jt808Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Jt808Application.class, args);
-    }
-
-    @Override
-    public void run(String... args) {
-        server.start();
     }
 
 

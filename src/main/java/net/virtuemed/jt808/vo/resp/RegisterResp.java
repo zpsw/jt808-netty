@@ -7,7 +7,7 @@ import net.virtuemed.jt808.vo.DataPacket;
 /**
  * @Author: Zpsw
  * @Date: 2019-05-15
- * @Description:鉴权响应包
+ * @Description:注册响应包
  * @Version: 1.0
  */
 @Data
