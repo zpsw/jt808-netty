@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="false">
 
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
 	<!-- Log file path -->
 	<property name="log.path" value="log" />
 
 	<!-- Console log output -->
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{MM-dd HH:mm:ss.SSS} %-5level [%logger{50}] - %m%n</pattern>
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
 		</encoder>
 	</appender>
 
@@ -20,7 +22,7 @@
 			<maxHistory>10</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p ${PID:- } [%15.15t] [%-39logger{39}] - %m%n</pattern>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
 		</encoder>
 	</appender>
 	<appender name="async_debug" class="ch.qos.logback.classic.AsyncAppender">
@@ -37,7 +39,7 @@
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p ${PID:- } [%15.15t] [%-39logger{39}] - %m%n</pattern>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 			<level>ERROR</level>
