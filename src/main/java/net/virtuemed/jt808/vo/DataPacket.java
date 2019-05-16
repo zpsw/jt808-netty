@@ -63,7 +63,7 @@ public class DataPacket {
      * @return
      */
     public ByteBuf toByteBufMsg() {
-        ByteBuf bb = ByteBufAllocator.DEFAULT.heapBuffer();//在JT808Encoder escape()方法处回收
+        ByteBuf bb = ByteBufAllocator.DEFAULT.directBuffer();//在JT808Encoder escape()方法处回收
         bb.writeInt(0);//先占4字节用来写msgId和msgBodyProps，JT808Encoder中覆盖回来
         bb.writeBytes(BCD.toBcdBytes(StringUtils.leftPad(this.header.getTerminalPhone(), 12, "0")));
         bb.writeShort(this.header.getFlowId());
