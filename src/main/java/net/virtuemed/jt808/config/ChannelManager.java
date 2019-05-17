@@ -6,10 +6,8 @@ import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.AttributeKey;
-import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,22 +26,12 @@ public class ChannelManager {
 
     private static final AttributeKey<String> TERMINAL_PHONE = AttributeKey.newInstance("terminalPhone");
 
-    @Autowired
-    @Qualifier("businessGroup")
-    private EventExecutorGroup businessGroup;
-
-    private ChannelGroup channelGroup;
+    private ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     private Map<String, ChannelId> channelIdMap = new ConcurrentHashMap<>();
 
     private ChannelFutureListener remover = future ->
             channelIdMap.remove(future.channel().attr(TERMINAL_PHONE).get());
-
-
-    @PostConstruct
-    public void initGroup() {
-        channelGroup = new DefaultChannelGroup(businessGroup.next());
-    }
 
     public boolean add(String terminalPhone, Channel channel) {
         boolean added = channelGroup.add(channel);
