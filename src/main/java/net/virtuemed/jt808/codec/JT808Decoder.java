@@ -27,13 +27,13 @@ public class JT808Decoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         log.debug("<<<<< ip:{},hex:{}", ctx.channel().remoteAddress(), ByteBufUtil.hexDump(in));
-        DataPacket msg = decode(ctx, in);
+        DataPacket msg = decode(in);
         if (msg != null) {
             out.add(msg);
         }
     }
 
-    private DataPacket decode(ChannelHandlerContext ctx, ByteBuf in) {
+    private DataPacket decode(ByteBuf in) {
         if (in.readableBytes() < 12) { //包头最小长度
             return null;
         }
