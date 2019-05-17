@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.virtuemed.jt808.config.JT808Const;
 import net.virtuemed.jt808.util.JT808Util;
 import net.virtuemed.jt808.vo.DataPacket;
 
@@ -51,7 +52,7 @@ public class JT808Encoder extends MessageToByteEncoder<DataPacket> {
     public ByteBuf escape(ByteBuf raw) {
         int len = raw.readableBytes();
         ByteBuf buf = ByteBufAllocator.DEFAULT.directBuffer(len + 12);
-        buf.writeByte(0x7e);
+        buf.writeByte(JT808Const.PKG_DELIMITER);
         while (len > 0) {
             byte b = raw.readByte();
             if (b == 0x7e) {
@@ -66,7 +67,7 @@ public class JT808Encoder extends MessageToByteEncoder<DataPacket> {
             len--;
         }
         ReferenceCountUtil.safeRelease(raw);
-        buf.writeByte(0x7e);
+        buf.writeByte(JT808Const.PKG_DELIMITER);
         return buf;
     }
 
