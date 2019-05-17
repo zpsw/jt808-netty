@@ -17,8 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 public class DataPacket {
 
-    protected Header header = new Header();
-    protected ByteBuf byteBuf;
+    protected Header header = new Header(); //消息头
+    protected ByteBuf byteBuf; //消息体
 
     public DataPacket() {
     }
@@ -63,7 +63,7 @@ public class DataPacket {
      * @return
      */
     public ByteBuf toByteBufMsg() {
-        ByteBuf bb = ByteBufAllocator.DEFAULT.directBuffer();//在JT808Encoder escape()方法处回收
+        ByteBuf bb = ByteBufAllocator.DEFAULT.heapBuffer();//在JT808Encoder escape()方法处回收
         bb.writeInt(0);//先占4字节用来写msgId和msgBodyProps，JT808Encoder中覆盖回来
         bb.writeBytes(BCD.toBcdBytes(StringUtils.leftPad(this.header.getTerminalPhone(), 12, "0")));
         bb.writeShort(this.header.getFlowId());
@@ -93,10 +93,10 @@ public class DataPacket {
 
     @Data
     public static class Header {
-        private short msgId;// 消息ID
-        private short msgBodyProps;//消息体属性
-        private String terminalPhone; // 终端手机号
-        private short flowId;// 流水号
+        private short msgId;// 消息ID 2字节
+        private short msgBodyProps;//消息体属性 2字节
+        private String terminalPhone; // 终端手机号 6字节
+        private short flowId;// 流水号 2字节
 
         //获取包体长度
         public short getMsgBodyLength() {
