@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <netty.version>4.1.28.Final</netty.version>
+        <netty.version>4.1.36.Final</netty.version>
         <logback.version>1.2.3</logback.version>
         <mysqlconnector.version>5.1.47</mysqlconnector.version>
         <commons.lang3.version>3.7</commons.lang3.version>
