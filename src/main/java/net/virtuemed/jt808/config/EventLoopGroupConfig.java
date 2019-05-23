@@ -29,7 +29,7 @@ public class EventLoopGroupConfig {
      * 负责TCP连接建立操作 绝对不能阻塞
      * @return
      */
-    @Bean(name = "bossGroup", destroyMethod = "shutdownGracefully")
+    @Bean(name = "bossGroup")
     public NioEventLoopGroup bossGroup() {
         return new NioEventLoopGroup(bossThreadsNum);
     }
@@ -38,7 +38,7 @@ public class EventLoopGroupConfig {
      * 负责Socket读写操作 绝对不能阻塞
      * @return
      */
-    @Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
+    @Bean(name = "workerGroup")
     public NioEventLoopGroup workerGroup() {
         return new NioEventLoopGroup(workerThreadsNum);
     }
@@ -47,7 +47,7 @@ public class EventLoopGroupConfig {
      * Handler中出现IO操作(如数据库操作，网络操作)使用这个
      * @return
      */
-    @Bean(name = "businessGroup",destroyMethod = "shutdownGracefully")
+    @Bean(name = "businessGroup")
     public EventExecutorGroup businessGroup() {
         return new DefaultEventExecutorGroup(businessThreadsNum);
     }
