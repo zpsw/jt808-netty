@@ -3,7 +3,7 @@ package net.virtuemed.jt808.handler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import net.virtuemed.jt808.vo.req.LogOutMsg;
+import net.virtuemed.jt808.vo.req.RegisterMsg;
 import net.virtuemed.jt808.vo.resp.RegisterResp;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class RegisterMsgHandler extends BaseHandler<LogOutMsg> {
+public class RegisterMsgHandler extends BaseHandler<RegisterMsg> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, LogOutMsg msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RegisterMsg msg) throws Exception {
         log.debug(msg.toString());
         //默认鉴权成功
         RegisterResp resp = RegisterResp.success(msg, getSerialNumber(ctx.channel()));
