@@ -64,6 +64,7 @@ public class JT808Decoder extends ByteToMessageDecoder {
         int len = raw.length;
         ByteBuf buf = ByteBufAllocator.DEFAULT.heapBuffer(len);//DataPacket parse方法回收
         for (int i = 0; i < len; i++) {
+            //这里如果最后一位是0x7d会导致index溢出，说明原始报文转义有误
             if (raw[i] == 0x7d && raw[i + 1] == 0x01) {
                 buf.writeByte(0x7d);
                 i++;
