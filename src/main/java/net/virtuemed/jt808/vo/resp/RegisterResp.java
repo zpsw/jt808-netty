@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import lombok.Data;
 import net.virtuemed.jt808.config.JT808Const;
 import net.virtuemed.jt808.vo.DataPacket;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @Author: Zpsw
  * @Date: 2019-05-15
@@ -31,7 +33,7 @@ public class RegisterResp extends DataPacket {
         ByteBuf bb = super.toByteBufMsg();
         bb.writeShort(replyFlowId);
         bb.writeByte(result);
-        if (result == SUCCESS) {//成功才写入鉴权码
+        if (result == SUCCESS && StringUtils.isNotBlank(authCode)) {//成功才写入鉴权码
             bb.writeBytes(authCode.getBytes(JT808Const.DEFAULT_CHARSET));
         }
         return bb;
