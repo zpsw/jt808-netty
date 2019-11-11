@@ -27,9 +27,6 @@ public class JT808Encoder extends MessageToByteEncoder<DataPacket> {
         ByteBuf bb = msg.toByteBufMsg();
         bb.markWriterIndex();//标记一下，先到前面去写覆盖的，然后回到标记写校验码
         short bodyLen = (short) (bb.readableBytes() - 12);//包体长度=总长度-头部长度
-        if (msg.getHeader().hasSubPackage()) { //多包额外减去4
-            bodyLen -= 4;
-        }
         short bodyProps = createDefaultMsgBodyProperty(bodyLen);
         //覆盖占用的4字节
         bb.writerIndex(0);
