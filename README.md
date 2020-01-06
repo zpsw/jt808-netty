@@ -1,5 +1,5 @@
 
-这是一个Netty入门教学项目，整合Spring boot，并提供了一些Netty中的最佳实践（详细教程在下方连接）。
+这是一个Netty入门教学项目，解析JT808协议，整合Spring boot，并提供了一些Netty中的最佳实践（详细教程在下方连接）。
 
 
 下载代码到本地后，改动application.yml中的数据库连接即可运行，搭载Spring Data JPA会自动建表，
