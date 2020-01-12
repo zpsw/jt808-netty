@@ -26,7 +26,7 @@ public class RegisterMsg extends DataPacket {
 
     @Override
     public void parseBody() {
-        ByteBuf bb = this.byteBuf;
+        ByteBuf bb = this.payload;
         this.setProvinceId(bb.readShort());
         this.setCityId(bb.readShort());
         this.setManufacturerId(readString(5));

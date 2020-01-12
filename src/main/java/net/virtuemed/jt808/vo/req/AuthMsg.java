@@ -21,6 +21,6 @@ public class AuthMsg extends DataPacket {
 
     @Override
     public void parseBody() {
-        this.setAuthCode(readString(this.byteBuf.readableBytes()));
+        this.setAuthCode(readString(this.payload.readableBytes()));
     }
 }

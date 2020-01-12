@@ -18,36 +18,36 @@ import org.apache.commons.lang3.StringUtils;
 public class DataPacket {
 
     protected Header header = new Header(); //消息头
-    protected ByteBuf byteBuf; //消息体
+    protected ByteBuf payload; //消息体
 
     public DataPacket() {
     }
 
-    public DataPacket(ByteBuf byteBuf) {
-        this.byteBuf = byteBuf;
+    public DataPacket(ByteBuf payload) {
+        this.payload = payload;
     }
 
     public void parse() {
         try{
             this.parseHead();
             //验证包体长度
-            if (this.header.getMsgBodyLength() != this.byteBuf.readableBytes()) {
+            if (this.header.getMsgBodyLength() != this.payload.readableBytes()) {
                 throw new RuntimeException("包体长度有误");
             }
             this.parseBody();
         }finally {
-            ReferenceCountUtil.safeRelease(this.byteBuf);
+            ReferenceCountUtil.safeRelease(this.payload);
         }
     }
 
     protected void parseHead() {
-        header.setMsgId(byteBuf.readShort());
-        header.setMsgBodyProps(byteBuf.readShort());
+        header.setMsgId(payload.readShort());
+        header.setMsgBodyProps(payload.readShort());
         header.setTerminalPhone(BCD.BCDtoString(readBytes(6)));
-        header.setFlowId(byteBuf.readShort());
+        header.setFlowId(payload.readShort());
         if (header.hasSubPackage()) {
             //TODO 处理分包
-            byteBuf.readInt();
+            payload.readInt();
         }
     }
 
@@ -78,7 +78,7 @@ public class DataPacket {
      */
     public byte[] readBytes(int length) {
         byte[] bytes = new byte[length];
-        this.byteBuf.readBytes(bytes);
+        this.payload.readBytes(bytes);
         return bytes;
     }
 

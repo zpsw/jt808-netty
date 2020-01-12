@@ -28,7 +28,7 @@ public class LocationMsg extends DataPacket {
 
     @Override
     public void parseBody() {
-        ByteBuf bb = this.byteBuf;
+        ByteBuf bb = this.payload;
         this.setAlarm(bb.readInt());
         this.setStatusField(bb.readInt());
         this.setLatitude(bb.readUnsignedInt() * 1.0F / 1000000);
