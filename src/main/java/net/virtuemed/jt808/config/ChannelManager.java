@@ -10,7 +10,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,12 +29,21 @@ public class ChannelManager {
 
     private Map<String, ChannelId> channelIdMap = new ConcurrentHashMap<>();
 
-    private ChannelFutureListener remover = future ->
-            channelIdMap.remove(future.channel().attr(TERMINAL_PHONE).get());
+    private ChannelFutureListener remover = future -> {
+        String phone = future.channel().attr(TERMINAL_PHONE).get();
+        if (channelIdMap.get(phone) == future.channel().id()) {
+            channelIdMap.remove(phone);
+        }
+    };
 
     public boolean add(String terminalPhone, Channel channel) {
         boolean added = channelGroup.add(channel);
         if (added) {
+            if (channelIdMap.containsKey(terminalPhone)) {//替换
+                Channel old = get(terminalPhone);
+                old.closeFuture().removeListener(remover);
+                old.close();
+            }
             channel.attr(TERMINAL_PHONE).set(terminalPhone);
             channel.closeFuture().addListener(remover);
             channelIdMap.put(terminalPhone, channel.id());
